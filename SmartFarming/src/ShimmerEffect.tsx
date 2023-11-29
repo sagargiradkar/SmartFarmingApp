@@ -1,77 +1,73 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, Animated, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Dimensions, Animated } from 'react-native';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
-const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
-
 const ShimmerEffect = () => {
-  // Handle animation
-  const avatarRef = useRef();
-  const nameRef = useRef();
-  const headlineRef = useRef();
-  const contentRef = useRef();
+  const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
+
+  const shimmerAnimated = new Animated.Value(0);
 
   useEffect(() => {
-    const shimmerAnimated = Animated.stagger(
-      400,
-      [
-        Animated.sequence([
-          Animated.parallel([
-            Animated.timing(avatarRef.current, { toValue: -100, duration: 500, useNativeDriver: false }),
-            Animated.timing(nameRef.current, { toValue: -50, duration: 500, useNativeDriver: false }),
-            Animated.timing(headlineRef.current, { toValue: -30, duration: 500, useNativeDriver: false }),
-          ]),
-          Animated.parallel([
-            Animated.timing(avatarRef.current, { toValue: 0, duration: 500, useNativeDriver: false }),
-            Animated.timing(nameRef.current, { toValue: 0, duration: 500, useNativeDriver: false }),
-            Animated.timing(headlineRef.current, { toValue: 0, duration: 500, useNativeDriver: false }),
-          ]),
-        ]),
-        Animated.sequence([
-          Animated.parallel([
-            Animated.timing(contentRef.current, { toValue: -100, duration: 500, useNativeDriver: false }),
-          ]),
-          Animated.parallel([
-            Animated.timing(contentRef.current, { toValue: 0, duration: 500, useNativeDriver: false }),
-          ]),
-        ]),
-      ],
+    const shimmerAnimation = Animated.loop(
+      Animated.timing(shimmerAnimated, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: false,
+      }),
     );
-    Animated.loop(shimmerAnimated).start();
-  }, []);
+
+    shimmerAnimation.start();
+
+    return () => {
+      // Clean up the animation when the component unmounts
+      shimmerAnimation.stop();
+    };
+  }, [shimmerAnimated]);
 
   return (
     <View style={styles.container}>
       {/* Shimmer Effect Header */}
       <View style={styles.headerContainer}>
-        <ShimmerPlaceholder ref={avatarRef} style={styles.avatar} />
+        <ShimmerPlaceholder style={styles.avatar} />
         <View style={styles.headerTextContainer}>
-          <ShimmerPlaceholder ref={nameRef} style={styles.name} />
-          <ShimmerPlaceholder ref={headlineRef} style={styles.headline} />
+          <ShimmerPlaceholder style={styles.name} />
+          <ShimmerPlaceholder style={styles.headline} />
         </View>
       </View>
 
       {/* Shimmer Effect Content */}
-      <ShimmerPlaceholder ref={contentRef} style={styles.content} />
+      <ShimmerPlaceholder style={styles.content} />
     </View>
   );
 };
 
 const { width } = Dimensions.get('window');
 
+const ShimmerScreen = () => {
+  return (
+    <View style={styles.screenContainer}>
+      {[...Array(5)].map((_, index) => (
+        <ShimmerEffect key={index} />
+      ))}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 200,
+  screenContainer: {
+    marginTop: 10,
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    alignItems: 'flex-start',
+  },
+  container: {
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd', // Add a border to separate posts
-    alignItems: 'flex-start', // Align children to the left
+    borderBottomColor: '#ddd',
+    marginBottom: 20,
   },
   headerContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // Align items in a column
+    alignItems: 'flex-start',
   },
   avatar: {
     width: 60,
@@ -84,12 +80,12 @@ const styles = StyleSheet.create({
   },
   name: {
     borderRadius: 5,
-    width: width * 0.78, // Adjust width based on the screen size
+    width: width * 0.78,
     height: 16,
     marginBottom: 4,
   },
   headline: {
-    width: width * 0.5, // Adjust width based on the screen size
+    width: width * 0.5,
     height: 15,
     borderRadius: 5,
   },
@@ -102,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShimmerEffect;
+export default ShimmerScreen;
