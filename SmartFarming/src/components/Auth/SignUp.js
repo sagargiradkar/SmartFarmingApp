@@ -1,26 +1,26 @@
+// src/components/Auth/SignUp.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { signup } from '../../redux/actions/authActions';
 
-const SignUp = ({ navigation }) => {
-  const dispatch = useDispatch();
+const SignUp = ({ navigation, isAuthenticated, signup }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
-    // Validate and create user account
-
     // Dispatch signup action
-    dispatch(signup({ username, password }));
-
-    // Navigate to HomeScreen
-    navigation.navigate('Home');
+    signup({ username, password });
   };
+
+  // Redirect to HomeScreen when authenticated
+  if (isAuthenticated) {
+    navigation.navigate('Home');
+  }
 
   return (
     <View>
-      <Text>Sign Up</Text>
+      <Text>Sign Up Screen</Text>
       <TextInput
         placeholder="Username"
         value={username}
@@ -28,13 +28,23 @@ const SignUp = ({ navigation }) => {
       />
       <TextInput
         placeholder="Password"
-        secureTextEntry
         value={password}
         onChangeText={(text) => setPassword(text)}
+        secureTextEntry
       />
       <Button title="Sign Up" onPress={handleSignUp} />
     </View>
   );
 };
 
-export default SignUp;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+};
+
+const mapDispatchToProps = {
+  signup,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

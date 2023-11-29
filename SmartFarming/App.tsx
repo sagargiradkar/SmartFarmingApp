@@ -1,9 +1,14 @@
+// App.js
 import React from 'react';
-import ShimmerEffect from './src/ShimmerEffect'; 
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import AppNavigator from './src/navigation/AppNavigator';
 
 const App = () => {
   return (
-      <ShimmerEffect />
+    <Provider store={store}>
+      <AppNavigator />
+    </Provider>
   );
 };
 

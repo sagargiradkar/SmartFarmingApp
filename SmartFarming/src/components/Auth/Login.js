@@ -1,26 +1,26 @@
+// src/components/Auth/Login.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { login } from '../../redux/actions/authActions';
 
-const Login = ({ navigation }) => {
-  const dispatch = useDispatch();
+const Login = ({ navigation, isAuthenticated, login }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Validate credentials if needed
-
     // Dispatch login action
-    dispatch(login({ username, password }));
-
-    // Navigate to HomeScreen
-    navigation.navigate('Home');
+    login({ username, password });
   };
+
+  // Redirect to HomeScreen when authenticated
+  if (isAuthenticated) {
+    navigation.navigate('Home');
+  }
 
   return (
     <View>
-      <Text>Login</Text>
+      <Text>Login Screen</Text>
       <TextInput
         placeholder="Username"
         value={username}
@@ -28,13 +28,23 @@ const Login = ({ navigation }) => {
       />
       <TextInput
         placeholder="Password"
-        secureTextEntry
         value={password}
         onChangeText={(text) => setPassword(text)}
+        secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
     </View>
   );
 };
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+};
+
+const mapDispatchToProps = {
+  login,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
