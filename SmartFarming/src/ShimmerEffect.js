@@ -31,6 +31,7 @@ const ShimmerEffect = () => {
       <View style={styles.headerContainer}>
         <ShimmerPlaceholder style={styles.avatar} />
         <View style={styles.headerTextContainer}>
+          <ShimmerPlaceholder style={styles.headline} />
           <ShimmerPlaceholder style={styles.name} />
           <ShimmerPlaceholder style={styles.headline} />
         </View>

@@ -4,7 +4,14 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
-
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
+@Override
+protected List<ReactPackage> getPackages() {
+  return Arrays.<ReactPackage>asList(
+    new MainReactPackage(),
+    new SafeAreaContextPackage() // <-- This line should be present
+  );
+}
 public class MainActivity extends ReactActivity {
 
   /**
