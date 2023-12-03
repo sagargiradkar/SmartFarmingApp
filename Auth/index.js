@@ -12,7 +12,7 @@ require("./config/database").connect();
 const user = require("./route/user");
 app.use("/api/v1",user);
 
-// activate
+// activate  server at given port number
 app.listen(PORT ,()=>{
     console.log(`App is lisning at ${PORT}`);
 })
