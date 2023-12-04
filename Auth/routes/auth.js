@@ -1,15 +1,21 @@
+// routes/auth.js
+const express = require("express");
+const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
-const { validationResult, body } = require("express-validator");
 const User = require("../models/User");
 
-// signUp route handler with input validation
-exports.signup = [
-    // Validate name, email, password, and role
-    body("name").trim().isLength({ min: 1 }).withMessage("Name is required"),
-    body("email").isEmail().withMessage("Invalid email").normalizeEmail(),
-    body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
-    body("role").isIn(["user", "admin"]).withMessage("Invalid role"),
+const router = express.Router();
 
+// signUp route handler with input validation
+router.post(
+    "/signup",
+    [
+        // Validate name, email, password, and role
+        body("name").trim().isLength({ min: 1 }).withMessage("Name is required"),
+        body("email").isEmail().withMessage("Invalid email").normalizeEmail(),
+        body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
+        body("role").isIn(["Admin", "Student", "Visitor"]).withMessage("Invalid role"),
+    ],
     async (req, res) => {
         // Input validation
         const errors = validationResult(req);
@@ -59,5 +65,7 @@ exports.signup = [
                 data: {},
             });
         }
-    },
-];
+    }
+);
+
+module.exports = router;
